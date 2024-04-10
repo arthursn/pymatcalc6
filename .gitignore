@@ -4,8 +4,6 @@
 bin/
 build*/
 licenses
-examples/*
-!examples/*.xml
 pymatcalc/pymatcalc.py
 pymatcalc/*wrap*
 .vscode/
