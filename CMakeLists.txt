@@ -17,6 +17,7 @@ set(PYMATCALC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/pymatcalc")
 file(GLOB MATCALC_DLLS "${MATCALC_DIR}/*.dll")
 
 include_directories("${INCLUDE_DIR}" "${MATCALC_DIR}/external/api")
+add_definitions("-DMATCALC_DIR=\"${MATCALC_DIR}\"")
 
 find_package(SWIG REQUIRED)
 find_package(Python3 COMPONENTS Interpreter Development)

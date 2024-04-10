@@ -22,11 +22,11 @@
         function(buf);                       \
     } while (0)
 
-void init()
+void init(char* application_directory = MATCALC_DIR)
 {
-    MCC_InitializeExternalConstChar(MATCALC_DIR, true);
+    MCC_InitializeExternalConstChar(application_directory, true);
     MCCOL_ProcessCommandLineInput("set-working-directory ./");
-    EXECUTE_FMT_ARGS(MCCOL_ProcessCommandLineInput, "set-application-directory %s", MATCALC_DIR);
+    EXECUTE_FMT_ARGS(MCCOL_ProcessCommandLineInput, "set-application-directory %s", application_directory);
 }
 
 void execute_command(char* cmd)
