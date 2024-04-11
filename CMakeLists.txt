@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.17)
 
 project(
-  thermo_table_maker
+  pymatcalc
   LANGUAGES CXX
   VERSION 1.0)
 
