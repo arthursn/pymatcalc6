@@ -6,7 +6,9 @@ project(
   VERSION 1.0)
 
 set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_BUILD_TYPE "Release")
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
 
 option(MATCALC_DIR "MatCalc directory" "C:/MatCalc")
 
