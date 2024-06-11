@@ -2,10 +2,14 @@
 
 import tqdm
 import numpy as np
-import matplotlib.pyplot as plt
 
 import pymatcalc as mc
-from pymatcalc.utils import suppressing_stdout
+from pymatcalc.utils import suppressing_stdout, fix_matplotlib_backend
+
+# You must have tk installed
+fix_matplotlib_backend("TkAgg")
+
+import matplotlib.pyplot as plt
 
 ZERO_FRACTION_THRESHOLD = 1e-9
 
