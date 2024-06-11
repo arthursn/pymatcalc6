@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import pymatcalc as mc
+from pymatcalc.utils import suppressing_stdout
 
 ZERO_FRACTION_THRESHOLD = 1e-9
 
@@ -12,13 +13,14 @@ ZERO_FRACTION_THRESHOLD = 1e-9
 
 phases = ["FCC_A1", "BCC_A2", "CEMENTITE"]
 
-mc.init()
+with suppressing_stdout():
+    mc.init()
 
-mc.execute_command("use-module core")
-mc.execute_command("open-thermodyn-database mc_fe.tdb")
-mc.execute_command("select-element C")
-mc.execute_command(f"select-phase {' '.join(phases)}")
-mc.execute_command("read-thermodyn-database")
+    mc.execute_command("use-module core")
+    mc.execute_command("open-thermodyn-database mc_fe.tdb")
+    mc.execute_command("select-element C")
+    mc.execute_command(f"select-phase {' '.join(phases)}")
+    mc.execute_command("read-thermodyn-database")
 
 # %%
 
@@ -38,16 +40,17 @@ for temp, carb in tqdm.tqdm(
 ):
     mask = 0
 
-    try:
-        mc.set_temperature_kelvin(temp)
-        mc.set_element_mole_fraction("C", carb)
-        mc.calculate_equilibrium()
-    except Exception:
-        pass
-    else:
-        for p, phase in enumerate(phases):
-            if mc.get_variable(f"F${phase}") > ZERO_FRACTION_THRESHOLD:
-                mask |= 1 << p
+    with suppressing_stdout():
+        try:
+            mc.set_temperature_kelvin(temp)
+            mc.set_element_mole_fraction("C", carb)
+            mc.calculate_equilibrium()
+        except Exception:
+            pass
+        else:
+            for p, phase in enumerate(phases):
+                if mc.get_variable(f"F${phase}") > ZERO_FRACTION_THRESHOLD:
+                    mask |= 1 << p
 
     phase_map_mask.append(mask)
 
