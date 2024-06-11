@@ -150,7 +150,7 @@ if __name__ == "__main__":
 
     setup(
         name="pymatcalc",
-        version="0.1.dev0",
+        version="0.1",
         author="Arthur Nishikawa",
         description="Python Interface to Mitron",
         packages=["pymatcalc"],
