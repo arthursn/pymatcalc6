@@ -1,10 +1,11 @@
 # Python Standard Library
+import os
 import sys
 import site
 import subprocess
 from sysconfig import get_config_var
 from pathlib import Path
-from typing import Dict, Union, Optional, Callable
+from typing import Union, Callable
 
 # PyPI packages (build dependencies)
 from setuptools.dist import Distribution
@@ -108,7 +109,7 @@ if __name__ == "__main__":
 
     root_dir: Path = Path(__file__).parent
     build_dir: Path = root_dir / f"build-cmake-release-{wheel_tag}"
-    matcalc_dir: Path = Path("C:/MatCalc")
+    matcalc_dir: Path = Path(os.getenv("MATCALC_DIR", "C:/MatCalc"))
 
     def build_cmd():
         """
@@ -152,7 +153,7 @@ if __name__ == "__main__":
         name="pymatcalc",
         version="0.1",
         author="Arthur Nishikawa",
-        description="Python Interface to Mitron",
+        description="Python Interface to MatCalc",
         packages=["pymatcalc"],
         include_package_data=True,
         package_data={"pymatcalc": [dll.name for dll in matcalc_dir.glob("*.dll")]},
