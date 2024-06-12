@@ -5,21 +5,17 @@ project(
   LANGUAGES CXX
   VERSION 1.0)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-option(MATCALC_DIR "MatCalc directory" "C:/MatCalc")
-
-message(${MATCALC_DIR})
 set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
 set(PYMATCALC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/pymatcalc")
 
-file(GLOB MATCALC_DLLS "${MATCALC_DIR}/*.dll")
+include_directories("${INCLUDE_DIR}")
 
-include_directories("${INCLUDE_DIR}" "${MATCALC_DIR}/external/api")
-add_definitions("-DMATCALC_DIR=\"${MATCALC_DIR}\"")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/vendor/dylib" EXCLUDE_FROM_ALL)
 
 find_package(SWIG REQUIRED)
 find_package(Python3 COMPONENTS Interpreter Development)
@@ -38,9 +34,7 @@ swig_add_library(
   pymatcalc
   LANGUAGE python
   SOURCES "pymatcalc.i" OUTPUT_DIR "${PYMATCALC_DIR}")
-target_link_libraries(pymatcalc Python3::Python "${MATCALC_DIR}/libmc_core.a")
+target_link_libraries(pymatcalc Python3::Python dylib)
 set_target_properties(
   pymatcalc PROPERTIES LIBRARY_OUTPUT_DIRECTORY "$<1:${PYMATCALC_DIR}>"
                        SUFFIX "${EXT_SUFFIX}")
-
-install(FILES ${MATCALC_DLLS} DESTINATION "${PYMATCALC_DIR}")

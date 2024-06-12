@@ -1,5 +1,7 @@
 %module pymatcalc
 
+%feature("autodoc", "1");
+
 %{
 #define SWIG_FILE_WITH_INIT
 #include "matcalc_api.h"

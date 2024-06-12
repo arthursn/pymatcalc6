@@ -109,7 +109,6 @@ if __name__ == "__main__":
 
     root_dir: Path = Path(__file__).parent
     build_dir: Path = root_dir / f"build-cmake-release-{wheel_tag}"
-    matcalc_dir: Path = Path(os.getenv("MATCALC_DIR", "C:/MatCalc"))
 
     def build_cmd():
         """
@@ -117,14 +116,12 @@ if __name__ == "__main__":
         """
         root_dir_norm: str = normalize_win_path(root_dir, '"')
         build_dir_norm: str = normalize_win_path(build_dir, '"')
-        matcalc_dir_norm: str = normalize_win_path(matcalc_dir, '"')
         python_exe: str = normalize_win_path(sys.executable, '"')
 
         try:
             cmd = (
                 f"cmake -S {root_dir_norm} -B {build_dir_norm} "
                 f"-DPython3_EXECUTABLE={python_exe} "
-                f"-DMATCALC_DIR={matcalc_dir_norm} "
                 "-DCMAKE_BUILD_TYPE=Release"
             )
             subprocess.run(cmd, shell=True, check=True)
@@ -147,8 +144,6 @@ if __name__ == "__main__":
         build_cmd=build_cmd,
     )
 
-    print([dll.name for dll in matcalc_dir.glob("*.dll")])
-
     setup(
         name="pymatcalc",
         version="0.1",
@@ -156,7 +151,6 @@ if __name__ == "__main__":
         description="Python Interface to MatCalc",
         packages=["pymatcalc"],
         include_package_data=True,
-        package_data={"pymatcalc": [dll.name for dll in matcalc_dir.glob("*.dll")]},
         ext_modules=[pymatcalc_ext],
         # Override behaviour of build_ext
         cmdclass={"build_ext": CustomBuildExtensionsCmd},
