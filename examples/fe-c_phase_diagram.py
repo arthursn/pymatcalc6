@@ -3,7 +3,7 @@
 import tqdm
 import numpy as np
 
-import pymatcalc as mc
+import pymatcalc
 from pymatcalc.utils import suppressing_stdout, fix_matplotlib_backend
 
 # You must have tk installed
@@ -15,6 +15,7 @@ ZERO_FRACTION_THRESHOLD = 1e-9
 
 # %%
 
+mc = pymatcalc.MatCalcAPI()
 phases = ["FCC_A1", "BCC_A2", "CEMENTITE"]
 
 with suppressing_stdout():
