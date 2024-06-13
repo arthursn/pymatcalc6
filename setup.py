@@ -146,7 +146,7 @@ if __name__ == "__main__":
 
     setup(
         name="pymatcalc",
-        version="0.1",
+        version="0.1.1",
         author="Arthur Nishikawa",
         description="Python Interface to MatCalc",
         packages=["pymatcalc"],
