@@ -2,6 +2,7 @@
 #define MATCALC_API_H
 
 #include <cstdarg>
+#include <cstdlib>
 #include <cstring>
 #include <dylib.hpp>
 #include <filesystem>
@@ -22,7 +23,7 @@ class MatCalcAPI {
 private:
     dylib* mvpLibMatCalc = nullptr;
 
-    char mvApplicationDirectory[STRLEN_MAX];
+    char mvpApplicationDirectory[STRLEN_MAX] = ".";
 
     std::function<bool(const char*, bool)> MCC_InitializeExternalConstChar;
     std::function<int(char*)> MCCOL_ProcessCommandLineInput;
@@ -42,13 +43,15 @@ private:
     }
 
 public:
-    MatCalcAPI(const char* application_directory = "C:/MatCalc")
+    MatCalcAPI(const char* application_directory = std::getenv("MATCALC_DIR"))
     {
-        strcpy(mvApplicationDirectory, application_directory);
+        if (application_directory) {
+            strcpy(mvpApplicationDirectory, application_directory);
+        }
 
-        std::filesystem::current_path(mvApplicationDirectory);
+        std::filesystem::current_path(mvpApplicationDirectory);
 
-        mvpLibMatCalc = new dylib(mvApplicationDirectory, "mc_core");
+        mvpLibMatCalc = new dylib(mvpApplicationDirectory, "mc_core");
 
         dynamicallyLoadFunctions(mvpLibMatCalc);
     }
@@ -60,9 +63,9 @@ public:
 
     void init()
     {
-        MCC_InitializeExternalConstChar(mvApplicationDirectory, true);
+        MCC_InitializeExternalConstChar(mvpApplicationDirectory, true);
         MCCOL_ProcessCommandLineInput("set-working-directory ./");
-        EXECUTE_FMT_ARGS(MCCOL_ProcessCommandLineInput, "set-application-directory %s", mvApplicationDirectory);
+        EXECUTE_FMT_ARGS(MCCOL_ProcessCommandLineInput, "set-application-directory %s", mvpApplicationDirectory);
     }
 
     void execute_command(char* cmd)
