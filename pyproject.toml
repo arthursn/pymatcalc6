@@ -1,3 +1,15 @@
+[project]
+name = "pymatcalc"
+version = "0.1.1"
+description = "Python Interface to MatCalc"
+authors = [
+    { name = "Arthur Nishikawa", email = "a.nishikawa@tatasteeleurope.com" },
+]
+requires-python = ">=3.9"
+
+[project.optional-dependencies]
+examples = ["matplotlib>=3.9.4", "numpy>=2.0.2", "tqdm>=4.67.1"]
+
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
