@@ -1,3 +1,0 @@
-[submodule "vendor/dylib"]
-	path = vendor/dylib
-	url = https://github.com/martin-olivier/dylib
