@@ -1,4 +1,10 @@
-import os
+"""
+This module provides the MatCalcAPI class to interface with the MatCalc DLL.
+
+The MatCalcAPI class allows users to perform calculations, set element compositions,
+and retrieve variable values from the MatCalc environment.
+"""
+
 import ctypes
 from pathlib import Path
 from typing import Optional, Callable, Any, Sequence
@@ -7,6 +13,12 @@ __all__ = ["MatCalcAPI"]
 
 
 class MatCalcAPI:
+    """A class to interface with the MatCalc DLL for performing calculations.
+
+    This class provides methods to initialize the MatCalc environment,
+    execute commands, set element compositions, and retrieve variable values.
+    """
+
     STRLEN_MAX = 1024
 
     def __init__(
