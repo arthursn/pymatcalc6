@@ -1,6 +1,6 @@
 # Release history
 
-## 0.2.0 (13-06-2024)
+## 0.2.0 (14-03-2025)
 - API rewritten in pure Python, dropping C++ dependency
 
 ## 0.1.1 (13-06-2024)
