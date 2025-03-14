@@ -5,6 +5,7 @@ The MatCalcAPI class allows users to perform calculations, set element compositi
 and retrieve variable values from the MatCalc environment.
 """
 
+import os
 import ctypes
 from pathlib import Path
 from typing import Optional, Callable, Any, Sequence
