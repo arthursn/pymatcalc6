@@ -6,8 +6,9 @@ import numpy as np
 import pymatcalc
 from pymatcalc.utils import suppressing_stdout, fix_matplotlib_backend
 
-# You must have tk installed
-fix_matplotlib_backend("WebAgg")
+# Fall back to `alternative_backend` if QtAgg is being used by default
+# QtAgg cannot be used because of clashing DLLs with MatCalc
+fix_matplotlib_backend(alternative_backend="WebAgg")
 
 import matplotlib.pyplot as plt  # noqa: E402
 
