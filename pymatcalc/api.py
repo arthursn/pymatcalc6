@@ -1,5 +1,6 @@
 import os
 import ctypes
+from typing import Optional
 
 __all__ = ["MatCalcAPI"]
 
@@ -7,7 +8,10 @@ __all__ = ["MatCalcAPI"]
 class MatCalcAPI:
     STRLEN_MAX = 1024
 
-    def __init__(self, application_directory=None):
+    def __init__(
+        self,
+        application_directory: Optional[str] = None,
+    ) -> None:
         self.application_directory = application_directory
 
         if self.application_directory is None:
@@ -60,32 +64,55 @@ class MatCalcAPI:
             f"set-application-directory {self.application_directory}".encode("utf-8")
         )
 
-    def execute_command(self, cmd):
+    def execute_command(
+        self,
+        cmd: str,
+    ) -> None:
         error_code = self.MCCOL_ProcessCommandLineInput(cmd.encode("utf-8"))
         if error_code != 0:
             raise RuntimeError(f"Err nr {error_code} while executing '{cmd}'")
 
-    def execute_command_new_coline(self, cmd):
+    def execute_command_new_coline(
+        self,
+        cmd: str,
+    ) -> None:
         error_code = self.MCCOL_ProcessCommandLineInputNewColine(cmd.encode("utf-8"))
         if error_code != 0:
             raise RuntimeError(f"Err nr {error_code} while executing '{cmd}'")
 
-    def calculate_equilibrium(self):
+    def calculate_equilibrium(
+        self,
+    ) -> None:
         error_code = self.MCC_CalcEquilibrium(False, 0)
         if error_code != 0:
             raise RuntimeError(f"Err nr {error_code} while calculating equilibrium")
 
-    def set_temperature_kelvin(self, temperature_kelvin):
+    def set_temperature_kelvin(
+        self,
+        temperature_kelvin: float,
+    ) -> None:
         self.MCC_SetTemperature(temperature_kelvin, False)
 
-    def set_element_mole_fraction(self, element_symbol, value):
+    def set_element_mole_fraction(
+        self,
+        element_symbol: str,
+        value: float,
+    ) -> None:
         self.execute_command(f"enter-composition X {element_symbol}={value}")
 
-    def set_element_weight_fraction(self, element_symbol, value):
+    def set_element_weight_fraction(
+        self,
+        element_symbol: str,
+        value: float,
+    ) -> None:
         self.execute_command(f"enter-composition W {element_symbol}={value}")
 
-    def set_element_site_fraction(self, element_symbol, value):
+    def set_element_site_fraction(
+        self,
+        element_symbol: str,
+        value: float,
+    ) -> None:
         self.execute_command(f"enter-composition U {element_symbol}={value}")
 
-    def get_variable(self, variable):
+    def get_variable(self, variable: str) -> float:
         return self.MCC_GetMCVariable(variable.encode("utf-8"))
