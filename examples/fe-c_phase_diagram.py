@@ -7,7 +7,7 @@ import pymatcalc
 from pymatcalc.utils import suppressing_stdout, fix_matplotlib_backend
 
 # You must have tk installed
-fix_matplotlib_backend("TkAgg")
+fix_matplotlib_backend("WebAgg")
 
 import matplotlib.pyplot as plt  # noqa: E402
 
