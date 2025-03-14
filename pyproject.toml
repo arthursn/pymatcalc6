@@ -1,6 +1,6 @@
 [project]
 name = "pymatcalc"
-version = "0.1.1"
+version = "0.2.0"
 description = "Python Interface to MatCalc"
 authors = [
     { name = "Arthur Nishikawa", email = "a.nishikawa@tatasteeleurope.com" },
@@ -10,9 +10,9 @@ requires-python = ">=3.9"
 [project.optional-dependencies]
 examples = [
     "matplotlib>=3.9.4",
- "numpy>=2.0.2",
- "tornado>=6.4.2",
- "tqdm>=4.67.1",
+    "numpy>=2.0.2",
+    "tornado>=6.4.2",
+    "tqdm>=4.67.1",
 ]
 
 [build-system]
