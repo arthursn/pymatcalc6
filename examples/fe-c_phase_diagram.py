@@ -9,7 +9,7 @@ from pymatcalc.utils import suppressing_stdout, fix_matplotlib_backend
 # You must have tk installed
 fix_matplotlib_backend("TkAgg")
 
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt  # noqa: E402
 
 ZERO_FRACTION_THRESHOLD = 1e-9
 
