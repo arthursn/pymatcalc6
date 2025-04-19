@@ -9,6 +9,7 @@ pymatcalc/*wrap*
 .vscode/
 .venv/
 .aider*
+uv.lock
 CMakeUserPresets.json
 
 # Created by https://www.toptal.com/developers/gitignore/api/c++,python
