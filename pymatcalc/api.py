@@ -6,8 +6,8 @@ and retrieve variable values from the MatCalc environment.
 """
 
 import os
+import sys
 import ctypes
-import sysconfig
 from pathlib import Path
 from typing import Optional, Callable, Any, Sequence, Union
 
@@ -16,6 +16,17 @@ __all__ = ["MatCalcAPI"]
 
 
 PathType = Union[Path, str]
+
+
+def _get_shared_library_extension():
+    if sys.platform.startswith("win"):
+        return ".dll"
+    elif sys.platform.startswith("darwin"):
+        return ".dylib"
+    elif sys.platform.startswith("linux"):
+        return ".so"
+    else:
+        return "Unknown OS"
 
 
 class MatCalcAPI:
@@ -28,7 +39,7 @@ class MatCalcAPI:
     STRLEN_MAX = 1024
 
     def find_mc_core_library_file(self) -> Path:
-        shlib_suffix = sysconfig.get_config_var("SHLIB_SUFFIX")
+        shlib_suffix = _get_shared_library_extension()
 
         matching_files = set()
         for prefix in ["", "lib"]:
