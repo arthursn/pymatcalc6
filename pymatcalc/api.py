@@ -7,10 +7,15 @@ and retrieve variable values from the MatCalc environment.
 
 import os
 import ctypes
+import sysconfig
 from pathlib import Path
-from typing import Optional, Callable, Any, Sequence
+from typing import Optional, Callable, Any, Sequence, Union
+
 
 __all__ = ["MatCalcAPI"]
+
+
+PathType = Union[Path, str]
 
 
 class MatCalcAPI:
@@ -22,19 +27,38 @@ class MatCalcAPI:
 
     STRLEN_MAX = 1024
 
+    def find_mc_core_library_file(self) -> Path:
+        shlib_suffix = sysconfig.get_config_var("SHLIB_SUFFIX")
+
+        matching_files = set()
+        for prefix in ["", "lib"]:
+            for fpath in self.application_directory.glob(
+                f"{prefix}mc_core{shlib_suffix}*"
+            ):
+                matching_files.add(fpath.resolve())
+
+        if len(matching_files) == 0:
+            raise ValueError(
+                f"Could not find mc_core library file in '{self.application_directory}'"
+            )
+
+        # Sort matching files and return larger one
+        return sorted(matching_files, key=lambda file: file.stat().st_size).pop()
+
     def __init__(
         self,
-        application_directory: Optional[str] = None,
+        application_directory: Optional[PathType] = None,
+        mc_core_library_file: Optional[PathType] = None,
     ) -> None:
-        self.application_directory: str = application_directory or os.getenv(
-            "MATCALC_DIR", "."
+        self.application_directory: Path = Path(
+            application_directory or os.getenv("MATCALC_DIR", ".")
         )
 
         os.chdir(self.application_directory)
 
         # Load the DLL
         self.lib_matcalc = ctypes.CDLL(
-            str(Path(self.application_directory) / "mc_core.dll")
+            mc_core_library_file or self.find_mc_core_library_file()
         )
 
         # Load functions using the generic loader
@@ -79,11 +103,14 @@ class MatCalcAPI:
     def init(self) -> None:
         """Initialize the MatCalc API by setting the working directory and application directory."""
         self.MCC_InitializeExternalConstChar(
-            self.application_directory.encode("utf-8"), True
+            str(self.application_directory).encode("utf-8"),
+            True,
         )
         self.MCCOL_ProcessCommandLineInput(b"set-working-directory ./")
         self.MCCOL_ProcessCommandLineInput(
-            f"set-application-directory {self.application_directory}".encode("utf-8")
+            f"set-application-directory {str(self.application_directory)}".encode(
+                "utf-8"
+            )
         )
 
     def execute_command(self, cmd: str) -> None:
