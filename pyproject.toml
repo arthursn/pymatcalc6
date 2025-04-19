@@ -1,6 +1,6 @@
 [project]
 name = "pymatcalc"
-version = "0.2.0"
+dynamic = ["version"]
 description = "Python Interface to MatCalc"
 authors = [
     { name = "Arthur Nishikawa", email = "a.nishikawa@tatasteeleurope.com" },
@@ -16,5 +16,8 @@ examples = [
 ]
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
