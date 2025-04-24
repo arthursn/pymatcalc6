@@ -1,7 +1,7 @@
 [project]
-name = "pymatcalc"
+name = "pymatcalc6"
 dynamic = ["version"]
-description = "Python Interface to MatCalc"
+description = "Python Interface to MatCalc 6"
 authors = [
     { name = "Arthur Nishikawa", email = "a.nishikawa@tatasteeleurope.com" },
 ]

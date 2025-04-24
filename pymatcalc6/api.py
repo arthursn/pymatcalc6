@@ -93,6 +93,8 @@ class MatCalcAPI(ctypes.CDLL):
         # Register functions
         self._init_registered_functions()
 
+        self._post_init()
+
     def _find_mc_core_library_file(self) -> Path:
         """Find the mc_core library file (e.g., mc_core.dll)"""
         shlib_suffix = _get_shared_library_extension()
@@ -119,7 +121,7 @@ class MatCalcAPI(ctypes.CDLL):
             func.argtypes = func_spec.argtypes
             func.restype = func_spec.restype
 
-    def init(self) -> None:
+    def _post_init(self) -> None:
         """Initialize the MatCalc API by setting the working directory and application directory."""
         self.MCC_InitializeExternalConstChar(
             str(self.application_directory).encode("utf-8"),
