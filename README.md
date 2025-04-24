@@ -21,7 +21,8 @@ pymatcalc6 is in dev and not yet published to the Python Package Index. To insta
 
 ```bash
 git clone https://github.com/arthursn/pymatcalc6/
-pip install ./pymatcalc6
+cd pymatcalc6
+pip install .
 ```
 
 ## Usage
