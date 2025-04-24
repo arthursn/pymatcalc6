@@ -33,18 +33,18 @@ def suppressing_stdout():
         os.dup2(STDOUT_DUPLICATE, STDOUT_FILENO)
 
 
-def fix_matplotlib_backend(alternative_backend: str = "TkAgg"):
+def fix_matplotlib_backend(alternative_backend: str = "WebAgg"):
     """
     If backend being used is QtAgg, change backend to `alternative_backend`
-    to prevent issues with pymatcalc
+    to prevent issues with pymatcalc6
 
     Args:
         alternative_backend (str): Alternative backend to QtAgg
-            Defaults to "TkAgg"
+            Defaults to "WebAgg"
     """
     import sys
 
-    if "pymatcalc" in sys.modules:
+    if "pymatcalc6" in sys.modules:
         from fnmatch import fnmatch
         import matplotlib
 
