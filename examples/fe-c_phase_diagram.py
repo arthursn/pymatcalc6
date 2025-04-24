@@ -3,8 +3,8 @@
 import tqdm
 import numpy as np
 
-import pymatcalc
-from pymatcalc.utils import suppressing_stdout, fix_matplotlib_backend
+from pymatcalc6 import MatCalcAPI
+from pymatcalc6.utils import suppressing_stdout, fix_matplotlib_backend
 
 # Fall back to `alternative_backend` if QtAgg is being used by default
 # QtAgg cannot be used because of clashing DLLs with MatCalc
@@ -16,12 +16,10 @@ ZERO_FRACTION_THRESHOLD = 1e-9
 
 # %%
 
-mc = pymatcalc.MatCalcAPI()
+mc = MatCalcAPI()
 phases = ["FCC_A1", "BCC_A2", "CEMENTITE"]
 
 with suppressing_stdout():
-    mc.init()
-
     mc.execute_command("use-module core")
     mc.execute_command("open-thermodyn-database mc_fe.tdb")
     mc.execute_command("select-element C")

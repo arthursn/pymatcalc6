@@ -9,7 +9,8 @@ import os
 import sys
 import ctypes
 from pathlib import Path
-from typing import Optional, Callable, Any, Sequence, Union
+from dataclasses import dataclass
+from typing import List, Optional, Callable, Union
 
 
 __all__ = ["MatCalcAPI"]
@@ -29,16 +30,73 @@ def _get_shared_library_extension():
         return "Unknown OS"
 
 
-class MatCalcAPI:
+class MatCalcAPI(ctypes.CDLL):
     """A class to interface with the MatCalc DLL for performing calculations.
 
     This class provides methods to initialize the MatCalc environment,
     execute commands, set element compositions, and retrieve variable values.
     """
 
-    STRLEN_MAX = 1024
+    @dataclass
+    class FunctionSpec:
+        name: str
+        argtypes: List[type]
+        restype: type
 
-    def find_mc_core_library_file(self) -> Path:
+    _registered_functions = [
+        FunctionSpec(
+            name="MCC_InitializeExternalConstChar",
+            argtypes=[ctypes.c_char_p, ctypes.c_bool],
+            restype=ctypes.c_bool,
+        ),
+        FunctionSpec(
+            name="MCCOL_ProcessCommandLineInput",
+            argtypes=[ctypes.c_char_p],
+            restype=ctypes.c_int,
+        ),
+        FunctionSpec(
+            name="MCCOL_ProcessCommandLineInputNewColine",
+            argtypes=[ctypes.c_char_p],
+            restype=ctypes.c_int,
+        ),
+        FunctionSpec(
+            name="MCC_CalcEquilibrium",
+            argtypes=[ctypes.c_bool, ctypes.c_int],
+            restype=ctypes.c_int,
+        ),
+        FunctionSpec(
+            name="MCC_SetTemperature",
+            argtypes=[ctypes.c_double, ctypes.c_bool],
+            restype=ctypes.c_double,
+        ),
+        FunctionSpec(
+            name="MCC_GetMCVariable",
+            argtypes=[ctypes.c_char_p],
+            restype=ctypes.c_double,
+        ),
+    ]
+
+    def __init__(
+        self,
+        application_directory: Optional[PathType] = None,
+        mc_core_library_file: Optional[PathType] = None,
+    ) -> None:
+        self.application_directory: Path = Path(
+            application_directory or os.getenv("MATCALC_DIR", ".")
+        )
+
+        os.chdir(self.application_directory)
+
+        # Load the DLL
+        super().__init__(mc_core_library_file or self._find_mc_core_library_file())
+
+        # Register functions
+        self._init_registered_functions()
+
+        self._post_init()
+
+    def _find_mc_core_library_file(self) -> Path:
+        """Find the mc_core library file (e.g., mc_core.dll)"""
         shlib_suffix = _get_shared_library_extension()
 
         matching_files = set()
@@ -56,62 +114,14 @@ class MatCalcAPI:
         # Sort matching files and return larger one
         return sorted(matching_files, key=lambda file: file.stat().st_size).pop()
 
-    def __init__(
-        self,
-        application_directory: Optional[PathType] = None,
-        mc_core_library_file: Optional[PathType] = None,
-    ) -> None:
-        self.application_directory: Path = Path(
-            application_directory or os.getenv("MATCALC_DIR", ".")
-        )
+    def _init_registered_functions(self) -> Callable:
+        """Initialize the registered functions"""
+        for func_spec in self._registered_functions:
+            func = getattr(self, func_spec.name)
+            func.argtypes = func_spec.argtypes
+            func.restype = func_spec.restype
 
-        os.chdir(self.application_directory)
-
-        # Load the DLL
-        self.lib_matcalc = ctypes.CDLL(
-            mc_core_library_file or self.find_mc_core_library_file()
-        )
-
-        # Load functions using the generic loader
-        self.MCC_InitializeExternalConstChar = self.load_dll_function(
-            "MCC_InitializeExternalConstChar",
-            [ctypes.c_char_p, ctypes.c_bool],
-            ctypes.c_bool,
-        )
-
-        self.MCCOL_ProcessCommandLineInput = self.load_dll_function(
-            "MCCOL_ProcessCommandLineInput", [ctypes.c_char_p], ctypes.c_int
-        )
-
-        self.MCCOL_ProcessCommandLineInputNewColine = self.load_dll_function(
-            "MCCOL_ProcessCommandLineInputNewColine", [ctypes.c_char_p], ctypes.c_int
-        )
-
-        self.MCC_CalcEquilibrium = self.load_dll_function(
-            "MCC_CalcEquilibrium", [ctypes.c_bool, ctypes.c_int], ctypes.c_int
-        )
-
-        self.MCC_SetTemperature = self.load_dll_function(
-            "MCC_SetTemperature", [ctypes.c_double, ctypes.c_bool], ctypes.c_double
-        )
-
-        self.MCC_GetMCVariable = self.load_dll_function(
-            "MCC_GetMCVariable", [ctypes.c_char_p], ctypes.c_double
-        )
-
-    def load_dll_function(
-        self,
-        func_name: str,
-        argtypes: Sequence[ctypes.CFUNCTYPE],
-        restype: Any,
-    ) -> Callable:
-        """Dynamically load a function from the DLL."""
-        func = getattr(self.lib_matcalc, func_name)
-        func.argtypes = argtypes
-        func.restype = restype
-        return func
-
-    def init(self) -> None:
+    def _post_init(self) -> None:
         """Initialize the MatCalc API by setting the working directory and application directory."""
         self.MCC_InitializeExternalConstChar(
             str(self.application_directory).encode("utf-8"),
