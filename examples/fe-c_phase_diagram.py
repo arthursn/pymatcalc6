@@ -1,3 +1,14 @@
+# %% [markdown]
+
+# # Calculating Fe-C phase diagram
+
+# Make sure to install the dependencies to run this example with:
+
+# ```bash
+# # From the pymatcalc6 root folder
+# pip install '.[examples]'
+# ```
+
 # %%
 
 import tqdm
@@ -16,10 +27,11 @@ ZERO_FRACTION_THRESHOLD = 1e-9
 
 # %%
 
-mc = MatCalcAPI()
 phases = ["FCC_A1", "BCC_A2", "CEMENTITE"]
 
+# Use supressing_stdout to suppress the stdout output from mc_core
 with suppressing_stdout():
+    mc = MatCalcAPI()
     mc.execute_command("use-module core")
     mc.execute_command("open-thermodyn-database mc_fe.tdb")
     mc.execute_command("select-element C")
