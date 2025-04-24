@@ -5,8 +5,7 @@
 # Make sure to install the dependencies to run this example with:
 
 # ```bash
-# # From the pymatcalc6 root folder
-# pip install '.[examples]'
+# pip install 'git+https://github.com/arthursn/pymatcalc6/[examples]'
 # ```
 
 # %%

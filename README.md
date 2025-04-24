@@ -17,12 +17,10 @@ Optionally, set the `MATCALC_DIR` environment variable to the path to MatCalc's 
 
 ## Installation
 
-pymatcalc6 is in dev and not yet published to the Python Package Index. To install it, clone this repo and then install pymatcalc6 using pip:
+pymatcalc6 is still dev and not yet published to the Python Package Index. You can still install with pip:
 
 ```bash
-git clone https://github.com/arthursn/pymatcalc6/
-cd pymatcalc6
-pip install .
+pip install git+https://github.com/arthursn/pymatcalc6/
 ```
 
 ## Usage
