@@ -60,6 +60,23 @@ print("Fraction cementite", mc.get_variable("F$CEMENTITE"))
 
 ## Troubleshooting
 
+### Library loading issues: matplotlib with QtAgg backend
+
+Because `mc_core` relies on certain specific Qt libraries, you might run into compatibility issues if you try to use the `QtAgg` backend with matplotlib while also using pymatcalc6. The solution for this problem is use an alternative backend, such as `TkAgg` or `WebAgg`. You can do so by editing your `matplotlibrc` file, or by running the `fix_matplotlib_backend` utils function:
+
+```python
+from pymatcalc6.utils import fix_matplotlib_backend
+
+# Fall back to `alternative_backend` if QtAgg is being used by default
+fix_matplotlib_backend(alternative_backend="WebAgg")
+
+import matplotlib.pyplot as plt
+```
+
+Notice that you have run `fix_matplotlib_backend` before importing matplotlib.
+
+### Library loading issues: not found libraries in Linux/macOS
+
 You might encounter the following error in Linux or macOS:
 
 ```
