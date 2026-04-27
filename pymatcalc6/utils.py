@@ -46,6 +46,7 @@ def fix_matplotlib_backend(alternative_backend: str = "WebAgg"):
 
     if "pymatcalc6" in sys.modules:
         from fnmatch import fnmatch
+
         import matplotlib
 
         if fnmatch(matplotlib.get_backend(), "Qt*Agg"):

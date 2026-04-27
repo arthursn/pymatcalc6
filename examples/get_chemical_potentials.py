@@ -10,11 +10,11 @@
 
 # %%
 
-import tqdm
 import numpy as np
+import tqdm
 
 from pymatcalc6 import MatCalcAPI
-from pymatcalc6.utils import suppressing_stdout, fix_matplotlib_backend
+from pymatcalc6.utils import fix_matplotlib_backend, suppressing_stdout
 
 # Fall back to `alternative_backend` if QtAgg is being used by default
 # QtAgg cannot be used because of clashing DLLs with MatCalc

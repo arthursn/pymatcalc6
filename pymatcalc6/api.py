@@ -5,18 +5,15 @@ The MatCalcAPI class allows users to perform calculations, set element compositi
 and retrieve variable values from the MatCalc environment.
 """
 
+from __future__ import annotations
+
+import ctypes
 import os
 import sys
-import ctypes
-from pathlib import Path
 from dataclasses import dataclass
-from typing import List, Optional, Callable, Union
-
+from pathlib import Path
 
 __all__ = ["MatCalcAPI"]
-
-
-PathType = Union[Path, str]
 
 
 def _get_shared_library_extension():
@@ -40,7 +37,7 @@ class MatCalcAPI(ctypes.CDLL):
     @dataclass
     class FunctionSpec:
         name: str
-        argtypes: List[type]
+        argtypes: list[type]
         restype: type
 
     _registered_functions = [
@@ -78,8 +75,8 @@ class MatCalcAPI(ctypes.CDLL):
 
     def __init__(
         self,
-        application_directory: Optional[PathType] = None,
-        mc_core_library_file: Optional[PathType] = None,
+        application_directory: Path | str | None = None,
+        mc_core_library_file: Path | str | None = None,
     ) -> None:
         self.application_directory: Path = Path(
             application_directory or os.getenv("MATCALC_DIR", ".")
@@ -88,7 +85,7 @@ class MatCalcAPI(ctypes.CDLL):
         os.chdir(self.application_directory)
 
         # Load the DLL
-        super().__init__(mc_core_library_file or self._find_mc_core_library_file())
+        super().__init__(str(mc_core_library_file or self._find_mc_core_library_file()))
 
         # Register functions
         self._init_registered_functions()
@@ -114,7 +111,7 @@ class MatCalcAPI(ctypes.CDLL):
         # Sort matching files and return larger one
         return sorted(matching_files, key=lambda file: file.stat().st_size).pop()
 
-    def _init_registered_functions(self) -> Callable:
+    def _init_registered_functions(self) -> None:
         """Initialize the registered functions"""
         for func_spec in self._registered_functions:
             func = getattr(self, func_spec.name)
